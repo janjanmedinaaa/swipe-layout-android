@@ -5,12 +5,10 @@ def version = "1.0.14"
 def code = 10014
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
-
+    compileSdkVersion 27
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 27
         versionCode code
         versionName version
     }
@@ -20,12 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-core-ui:24.2.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:support-core-ui:27.1.1'
 }
 
 task sourcesJar(type: Jar) {
@@ -59,6 +56,7 @@ publish {
     groupId = 'ru.rambler.android'
     artifactId = 'swipe-layout'
     publishVersion = version
+    userOrg = 'rambler'
     desc = 'Android UI widget'
     licences = ['Apache-2.0']
     website = 'https://github.com/rambler-digital-solutions/swipe-layout-android'
