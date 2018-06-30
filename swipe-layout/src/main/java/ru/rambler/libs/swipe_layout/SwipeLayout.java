@@ -161,8 +161,6 @@ public class SwipeLayout extends ViewGroup {
 
     /**
      * enable or disable swipe gesture handling
-     *
-     * @param enabled
      */
     public void setSwipeEnabled(boolean enabled) {
         this.leftSwipeEnabled = enabled;
@@ -171,18 +169,13 @@ public class SwipeLayout extends ViewGroup {
 
     /**
      * Enable or disable swipe gesture from left side
-     *
-     * @param leftSwipeEnabled
      */
-
     public void setLeftSwipeEnabled(boolean leftSwipeEnabled) {
         this.leftSwipeEnabled = leftSwipeEnabled;
     }
 
     /**
      * Enable or disable swipe gesture from right side
-     *
-     * @param rightSwipeEnabled
      */
 
     public void setRightSwipeEnabled(boolean rightSwipeEnabled) {
@@ -331,7 +324,7 @@ public class SwipeLayout extends ViewGroup {
 
                 handled = xvel >= 0 ? onMoveRightReleased(releasedChild, dx, xvel) : onMoveLeftReleased(releasedChild, dx, xvel);
 
-            } else if (dx < 0) {
+            } else {
 
                 handled = xvel <= 0 ? onMoveLeftReleased(releasedChild, dx, xvel) : onMoveRightReleased(releasedChild, dx, xvel);
             }
@@ -605,7 +598,7 @@ public class SwipeLayout extends ViewGroup {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         return isSwipeEnabled()
-                ? dragHelper.shouldInterceptTouchEvent(event)
+                ? internalOnInterceptTouchEvent(event)
                 : super.onInterceptTouchEvent(event);
     }
 
@@ -618,9 +611,7 @@ public class SwipeLayout extends ViewGroup {
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                touchState = TOUCH_STATE_WAIT;
-                touchX = event.getX();
-                touchY = event.getY();
+                onTouchBegin(event);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -630,7 +621,10 @@ public class SwipeLayout extends ViewGroup {
 
                     boolean isLeftToRight = (event.getX() - touchX) > 0;
 
-                    if ((isLeftToRight && !leftSwipeEnabled) || (!isLeftToRight && !rightSwipeEnabled)) {
+                    if (((isLeftToRight && !leftSwipeEnabled) || (!isLeftToRight && !rightSwipeEnabled))
+                            &&
+                            getOffset() == 0) {
+
                         return defaultResult;
                     }
 
@@ -685,20 +679,33 @@ public class SwipeLayout extends ViewGroup {
         return p instanceof LayoutParams;
     }
 
+    private boolean internalOnInterceptTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            onTouchBegin(event);
+        }
+        return dragHelper.shouldInterceptTouchEvent(event);
+    }
+
+    private void onTouchBegin(MotionEvent event) {
+        touchState = TOUCH_STATE_WAIT;
+        touchX = event.getX();
+        touchY = event.getY();
+    }
+
     private class SettleRunnable implements Runnable {
-        private final View mView;
+        private final View view;
         private final boolean moveToClamp;
         private final boolean moveToRight;
 
         SettleRunnable(View view, boolean moveToClamp, boolean moveToRight) {
-            this.mView = view;
+            this.view = view;
             this.moveToClamp = moveToClamp;
             this.moveToRight = moveToRight;
         }
 
         public void run() {
             if (dragHelper != null && dragHelper.continueSettling(true)) {
-                ViewCompat.postOnAnimation(this.mView, this);
+                ViewCompat.postOnAnimation(this.view, this);
             } else {
                 Log.d(TAG, "ONSWIPE clamp: " + moveToClamp + " ; moveToRight: " + moveToRight);
                 if (moveToClamp && swipeListener != null) {
