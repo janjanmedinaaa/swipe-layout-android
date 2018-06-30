@@ -56,7 +56,7 @@ publish {
     groupId = 'ru.rambler.android'
     artifactId = 'swipe-layout'
     publishVersion = version
-    userOrg = 'rambler'
+    userOrg = 'eduard'
     desc = 'Android UI widget'
     licences = ['Apache-2.0']
     website = 'https://github.com/rambler-digital-solutions/swipe-layout-android'
