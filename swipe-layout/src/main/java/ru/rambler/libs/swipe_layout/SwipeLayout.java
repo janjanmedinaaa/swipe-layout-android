@@ -233,8 +233,13 @@ public class SwipeLayout extends ViewGroup {
 
         final int parentTop = getPaddingTop();
 
+        centerView = null;
+        leftView = null;
+        rightView = null;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
+            if(child.getVisibility() == GONE) continue;
+
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             switch (lp.gravity) {
                 case LayoutParams.CENTER:
