@@ -1,15 +1,15 @@
 package ru.rambler.swipe_layout;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
+        RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(manager);
         recycler.setAdapter(new Adapter());
     }
@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
 
             ViewHolder(View itemView) {
                 super(itemView);
-                textViewPos = (TextView) itemView.findViewById(R.id.text_view_pos);
-                swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe_layout);
+                textViewPos = itemView.findViewById(R.id.text_view_pos);
+                swipeLayout = itemView.findViewById(R.id.swipe_layout);
                 rightView = itemView.findViewById(R.id.right_view);
                 leftView = itemView.findViewById(R.id.left_view);
             }
