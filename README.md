@@ -8,7 +8,7 @@ Flexible Android Widget
 
 Download via Gradle:
 ```groovy
-implementation 'ru.rambler.android:swipe-layout:1.0.16'
+implementation 'ru.rambler.android:swipe-layout:1.0.17'
 ```
 ## Usage
 
