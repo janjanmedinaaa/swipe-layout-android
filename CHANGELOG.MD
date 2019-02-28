@@ -1,3 +1,6 @@
+### 1.1.0
+* Added animateSwipeLeft() and animateSwipeRight()
+
 #### 1.0.17
 * Migrate to 'com.google.android.material:material:1.0.0'
 
