@@ -35,7 +35,7 @@ public class SwipeLayout extends ViewGroup {
     private float velocityThreshold;
     private float touchSlop;
     private OnSwipeListener swipeListener;
-    private WeakReference<ObjectAnimator> resetAnimator;
+    private WeakReference<ObjectAnimator> weakAnimator;
     private final Map<View, Boolean> hackedParents = new WeakHashMap<>();
     private boolean leftSwipeEnabled = true;
     private boolean rightSwipeEnabled = true;
@@ -95,7 +95,7 @@ public class SwipeLayout extends ViewGroup {
     public void reset() {
         if (centerView == null) return;
 
-        finishResetAnimator();
+        finishAnimator();
         dragHelper.abort();
 
         offsetChildren(null, -centerView.getLeft());
@@ -105,29 +105,58 @@ public class SwipeLayout extends ViewGroup {
      * reset swipe-layout state to initial position with animation (200ms)
      */
     public void animateReset() {
-        if (centerView == null) return;
+        if (centerView != null) {
+            runAnimation(centerView.getLeft(), 0);
+        }
+    }
 
-        finishResetAnimator();
+    /**
+     * Swipe with animation to left by right view's width
+     * <p>
+     * Ignores {@link SwipeLayout#isSwipeEnabled()} and {@link SwipeLayout#isLeftSwipeEnabled()}
+     */
+    public void animateSwipeLeft() {
+        if (centerView != null && rightView != null) {
+            int target = -rightView.getWidth();
+            runAnimation(getOffset(), target);
+        }
+    }
+
+    /**
+     * Swipe with animation to right by left view's width
+     * <p>
+     * Ignores {@link SwipeLayout#isSwipeEnabled()} and {@link SwipeLayout#isRightSwipeEnabled()}
+     */
+    public void animateSwipeRight() {
+        if (centerView != null && leftView != null) {
+            int target = leftView.getWidth();
+            runAnimation(getOffset(), target);
+        }
+    }
+
+    private void runAnimation(int initialX, int targetX) {
+        finishAnimator();
         dragHelper.abort();
 
         ObjectAnimator animator = new ObjectAnimator();
         animator.setTarget(this);
         animator.setPropertyName("offset");
         animator.setInterpolator(new AccelerateInterpolator());
-        animator.setIntValues(centerView.getLeft(), 0);
+        animator.setIntValues(initialX, targetX);
         animator.setDuration(200);
         animator.start();
-        resetAnimator = new WeakReference<>(animator);
+        this.weakAnimator = new WeakReference<>(animator);
     }
 
-    private void finishResetAnimator() {
-        if (resetAnimator == null) return;
+    private void finishAnimator() {
+        if (weakAnimator != null) {
 
-        ObjectAnimator animator = resetAnimator.get();
-        if (animator != null) {
-            resetAnimator.clear();
-            if (animator.isRunning()) {
-                animator.end();
+            ObjectAnimator animator = this.weakAnimator.get();
+            if (animator != null) {
+                this.weakAnimator.clear();
+                if (animator.isRunning()) {
+                    animator.end();
+                }
             }
         }
     }
@@ -239,7 +268,7 @@ public class SwipeLayout extends ViewGroup {
         rightView = null;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if(child.getVisibility() == GONE) continue;
+            if (child.getVisibility() == GONE) continue;
 
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             switch (lp.gravity) {
