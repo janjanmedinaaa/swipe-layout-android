@@ -134,6 +134,28 @@ public class SwipeLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Swipe with animation to left by a given width
+     * <p>
+     * Ignores {@link SwipeLayout#isSwipeEnabled()} and {@link SwipeLayout#isLeftSwipeEnabled()}
+     */
+    public void animateSwipeLeft(int target) {
+        if (centerView != null) {
+            runAnimation(getOffset(), -target);
+        }
+    }
+
+    /**
+     * Swipe with animation to right by a given width
+     * <p>
+     * Ignores {@link SwipeLayout#isSwipeEnabled()} and {@link SwipeLayout#isRightSwipeEnabled()}
+     */
+    public void animateSwipeRight(int target) {
+        if (centerView != null) {
+            runAnimation(getOffset(), target);
+        }
+    }
+
     private void runAnimation(int initialX, int targetX) {
         finishAnimator();
         dragHelper.abort();
