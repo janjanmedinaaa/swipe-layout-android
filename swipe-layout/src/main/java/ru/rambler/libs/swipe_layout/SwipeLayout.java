@@ -765,6 +765,7 @@ public class SwipeLayout extends ViewGroup {
                 ViewCompat.postOnAnimation(this.view, this);
             } else {
                 Log.d(TAG, "ONSWIPE clamp: " + moveToClamp + " ; moveToRight: " + moveToRight);
+                swipeListener.onEndSwipe(SwipeLayout.this, moveToClamp, moveToRight);
                 if (moveToClamp && swipeListener != null) {
                     swipeListener.onSwipeClampReached(SwipeLayout.this, moveToRight);
                 }
@@ -833,5 +834,7 @@ public class SwipeLayout extends ViewGroup {
         void onLeftStickyEdge(SwipeLayout swipeLayout, boolean moveToRight);
 
         void onRightStickyEdge(SwipeLayout swipeLayout, boolean moveToRight);
+
+        void onEndSwipe(SwipeLayout swipeLayout, boolean clampReached, boolean moveToRight);
     }
 }
